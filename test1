@@ -1,0 +1,13 @@
+
+from findtools.find_files import (find_files, Match)
+import collect_facial_points
+
+infile_path = '/Users/dev/Desktop/repos/faces/'
+infile_path = '/Users/dev/Desktop/repos/faces/test/'
+outfile_path = '/Users/dev/Desktop/repos/faces/test/cropped/'
+sh_files_pattern = Match(filetype='f', name='*.jp*')
+found_files = find_files(path=infile_path, match=sh_files_pattern)
+
+
+test = collect_facial_points.create_crops_points(found_files, outfile_path)
+

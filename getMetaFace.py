@@ -13,6 +13,7 @@ import ast, json
 from pandas import DataFrame
 import yaml
 import numpy as np
+import pymongo
 
 import simplejson
 import tmpFB
@@ -23,34 +24,55 @@ import ast
 api = API('b40d3ea28aad1f2c2aa939dec674abff', '_gYS77zBAL0U60gtv_qebqwRmRWJz4c1')
 
 
-def get_face_meta_url(found_files, api, club):
+conn = pymongo.MongoClient()
+db = conn.faces
+collection = db.urlClubPhotos
+collection1 = db.facesMeta
 
+
+def get_face_meta_url(api):
+    counter = 0
     facesMeta = pd.DataFrame()
     facesMetaList = []
     noFaces = []
-
-    for idx, imgpath in enumerate(found_files):
+    cursor1 = collection.find({'state': 0})
+    
+    for record in cursor1:
+        
+        counter += 1  
         try:
-            result = api.detection.detect(url = imgpath,  attribute="pose,age,gender,race,smile")
+            result = api.detection.detect(url = record['urlOfImage'],  attribute='pose,age,gender,race,smiling')
             r_dump = json.dumps(result)
-            result2=yaml.safe_load(r_dump)
-            if idx % 100 == 0:
+            result2 = yaml.safe_load(r_dump)
+
+            if counter % 100 == 0:
                 print('still going')
+
             if len(result['face']) > 0:
+                collection.update({'urlOfImage': record['urlOfImage']}, {'$set': {'state': 1}})
+                z = collection.find({},  {'state':1, '_id':0})
                 for face in result['face']:
                     tempDict = face
-                    tempDict['url'] = imgpath
+                    tempDict['url'] = record['urlOfImage']
                     tempDict['img_width'] = result['img_width']
                     tempDict['img_height'] = result['img_height']
+                    tempDict['svid'] = record['svid']
+                    tempDict['fbPageName'] = record['fbPageName']
+                    collection1.insert(tempDict)               
                     facesMetaList.append(tempDict)
-                    temp = json_normalize(tempDict)
-                    facesMeta = pd.concat([facesMeta, temp], axis=0, ignore_index = True)
+
             if len(result['face']) == 0:
-                noFaces.append(imgpath)
-        except:        
-            time.sleep(60)
-            print('sleeping at' + str(idx))
-
-    facesMeta.to_pickle("./data/facesMeta" + club + "_" + time.strftime("%Y%m%d")  + ".pkl")
-
-    return(facesMeta, facesMetaList)
+                noFaces.append(record['urlOfImage'])
+                collection.update({'urlOfImage': record['urlOfImage']}, {'$set': {'state': 1}})
+        except Exception as x:
+            print('e')
+            if x.code == 432:
+                failedLinks.append(record['urlOfImage'])
+            elif x.code == 502:
+                time.sleep(60)
+                print(idx)
+            else:
+                print(record['urlOfImage'])
+            failedLinks.append(record['urlOfImage'])    
+            
+get_face_meta_url(api)            

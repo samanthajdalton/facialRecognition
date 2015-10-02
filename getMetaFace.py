@@ -65,12 +65,13 @@ def get_face_meta_url(api):
                 noFaces.append(record['urlOfImage'])
                 collection.update({'urlOfImage': record['urlOfImage']}, {'$set': {'state': 1}})
         except Exception as x:
+            collection.update({'urlOfImage': record['urlOfImage']}, {'$set': {'state': 1}})
             print('e')
             if x.code == 432:
                 failedLinks.append(record['urlOfImage'])
             elif x.code == 502:
                 time.sleep(60)
-                print(idx)
+                print(counter)
             else:
                 print(record['urlOfImage'])
             failedLinks.append(record['urlOfImage'])    

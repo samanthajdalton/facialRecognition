@@ -1,0 +1,89 @@
+
+***************** NECESSARY / NEVER DELETE the following **********************
+
+facepp.py --(NECESARY) --- houses everything for reacing Face++ API
+haarcascade_frontalface_default.xml ---(NECESSARY, unles abandon cv2) needed for CV2
+
+
+
+***************** GENERAL HOUSEKEEPING ******************
+
+instagram validation.ipynb  --- checks instagram api access
+movePicstoOneFolder.ipynb --- just consolidates ong files into one folder
+
+
+
+
+
+****************** SCRAPING IMAGE URLS *******************
+
+
+
+tmpFBtoInstagram.py ---scrapes image urls from place's Instagram account using FB placeid 
+
+
+ImagesFromFaceBook.py --- gets fullsize image URLS from facebook place page and uploads these 2 mongo (updated version of tmpFB.py ---scrapes image urls from FB place page using selenium)
+
+
+
+
+
+******************* FACE DETECTION PYTHON SCRIPTS **********************************
+
+
+getMetaFace.py --- uses the urls with state=0 in Mongo to collect facial demographic information for faces in photos
+
+collect_facial_points.py ---collects 89 facial points for each face in photo using facpp api
+
+face_detection_scoring.py --- (EXAMPLE runs collect_facial_points.py ) reads downloaded photos, identifies faces via face++ api collects facials points via
+
+
+
+
+*************** NOTEBOOKS TESTING FUNCLTIONS FOR SCRAPING AND FACE INDENTIFICATION *************
+
+getFBtoInstagramUrls.ipynb ---calls function fo get FB placeid Instagram image urls
+
+scrapeImgURLSUpload2Mongo.ipynb  --- gets facebook placeid used in instagram and then gets the Instagram image URLS associated with that FB place id
+
+
+TRIAL_collect_facial_points.ipynb   ---tests facial collection points
+
+(combine next 2 ·· to allow for choice to use downloaded images or image URLS) 
+·· face_info_using_imgURLS.ipynb --- (ENTIRE PROCESS testing using img URLS using Mongo) pretty much same as CV2 filter but instead of downloading the pics, we just use the URLS
+
+·· cv2 filter.ipynb---uses cv2 to filter for faces in photo, reads photos from mongo then sends to facepp api to get demographic information about face and then computes facial point distances
+
+
+
+face_detection.ipynb --- ENTIRE PROCESS testing using downloaded images and NOT using Mongo
+
+download_instagram_photos.ipynb  ---downloads instagram photos using tag or lat/lon to folder
+
+
+sampleRun_ForFaceDemographicInfo.ipynb  ---sample notebook to run all all of the macros to get face demographic info using only facepp api to identify faces
+
+
+
+checkAPI_makeup_vs_NO_makeup.ipynb  ---uses a webapge of pics with same model and compares API output for the same person to see effects of makeup on age
+
+
+
+***************** SCRIPTS FOR VM *******************************
+VM_ImagesFromFaceBook.py
+VM_collect_facial_points.py
+VM_getMetaFace.py
+VM_tmpFB.py
+VM_tmpFBtoInstagram.py
+
+
+
+******************  REFERENCE SCRIPTS ****************************
+
+facesMain.py --- (initial SAMPLE) uses CV2 to verify face then sends to facepp API, taken from the web
+
+currentTest_noMongo.ipynb --- breaks up the process of point identification from downloaded photos and marking and cropping points faces out of photos
+
+
+
+
